@@ -1,0 +1,19 @@
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('ip')
+    parser.add_argument('--udp', action='store_true', default=False,
+                        help="configures the protocol to be UDP instead of the default TCP")
+    parser.add_argument('--timeout', '-W', type=int, help="Time to wait for a response, in seconds.")
+    parser.add_argument('--count', '-c', type=int, help="Stop after sending count 'ping' packets")
+    parser.add_argument('--packetsize', '-s', type=int, help="Specifies the number of data bytes to be sent")
+    parser.add_argument('--ttl', '-t', type=int, help="Set the time packet's to live (in seconds, NOT hops)")
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    ping = MyPing(ip=args.ip, udp=args.udp, timeout=args.timeout, count=args.count, packetsize=args.packetsize,
+                  ttl=args.ttl)
