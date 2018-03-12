@@ -3,7 +3,7 @@ import struct
 from contextlib import closing
 from threading import Event, Thread
 
-MAX_CONN = 5
+MAX_CONN = 1
 TCP_PORT = 48888
 UDP_PORT = 48889
 
@@ -13,11 +13,13 @@ stop = Event()
 def serve_tcp():
     print 'TCP server initiated'
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((socket.gethostbyname(socket.gethostname()), TCP_PORT))
         s.listen(MAX_CONN)
         while True:
             conn, _ = s.accept()
-            conn.send(get_packet(conn))
+            data, _ = get_packet(conn)
+            conn.send(data)
 
 
 def serve_udp():
@@ -31,8 +33,8 @@ def serve_udp():
 def get_packet(conn):
     data, addr = recvall(conn, 4)
     length, = struct.unpack('!I', data)
-    data += recvall(conn, length)
-    return data, addr
+    payload, _ = recvall(conn, length)
+    return data + payload, addr
 
 
 def recvall(sock, count):

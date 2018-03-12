@@ -17,7 +17,6 @@ class MyPing:
         :param timeout:
         :param count:
         :param packetsize: Packet size. minimum 8 bytes. Smaller values are completed to 8.
-        :param ttl:
         :param interval:
         """
         # self.interval = interval
